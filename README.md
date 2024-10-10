@@ -98,3 +98,6 @@ Ce rootkit se découpe en deux parties bien distincte un LKM (Linux Kernel Modul
 ### Ressources
 
 - [Rootkit Tutorial using Vagrant](https://xcellerator.github.io/posts/linux_rootkits_01/)
+- [Awesome Linux Rootkits](https://github.com/milabs/awesome-linux-rootkits)
+- [Creating a Rootkit to Learn C](https://h0mbre.github.io/Learn-C-By-Creating-A-Rootkit/)
+- [kprochide](https://github.com/spiderpig1297/kprochide)
