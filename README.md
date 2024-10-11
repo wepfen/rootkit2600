@@ -37,6 +37,24 @@ Ce rootkit n'étant qu'un simple module kernel linux, il suffit de le compiler p
 
 > Note : Je vous recommande de tester le rootkit sur une VM (via un shared folder) de façon à ne pas abimer votre propre OS/Kernel.
 
+### Prérequis
+
+Avant de tester votre rootkit il vous faudra les sources d'un kernel linux (6.X) pour compiler votre module. Pour se faire vous pouvez utiliser le script `get_kernel.sh` qui vous permettra de télécharger les sources du kernel.
+
+```bash
+./scripts/get_kernel.sh <version_kernel> # Exemple : ./scripts/get_kernel.sh 6.11
+```
+
+> Note : Vous pouvez aussi télécharger les sources du kernel via le site officiel de [kernel.org](https://www.kernel.org/).
+
+Il vous faudra ensuite compiler votre kernel une première fois.
+
+```bash
+./scripts/compile_kernel.sh <version_kernel> # Exemple : ./scripts/compile_kernel.sh 6.11
+```
+
+> Note : Si vous souhaitez compiler votre kernel avec une configuration spécifique vous pouvez le faire via la commande `make menuconfig` dans le dossier de vos sources.
+
 ### Build
 
 Pour compiler votre module basé sur votre version kernel.
