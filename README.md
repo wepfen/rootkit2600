@@ -55,6 +55,16 @@ Il vous faudra ensuite compiler votre kernel une première fois.
 
 > Note : Si vous souhaitez compiler votre kernel avec une configuration spécifique vous pouvez le faire via la commande `make menuconfig` dans le dossier de vos sources.
 
+Maintenant que votre kernel est compilé il faut créer une image disque configurée avec votre kernel et la monter.
+
+> *TODO* : Ajouter le script pour créer une image disque LFS. Voir [LFS](#lfs).
+
+Pour se faire vous devez utiliser le script `to_be_defined.sh` qui vous permettra de créer une image disque et de la monter.
+
+```bash
+./scripts/to_be_defined.sh
+```
+
 ### Build
 
 Pour compiler votre module basé sur votre version kernel.
@@ -111,7 +121,16 @@ Ce rootkit se découpe en deux parties bien distincte un LKM (Linux Kernel Modul
 
 ### C2
 
+> *TODO* : Expliquer les tenants et aboutissants du C2 permettant de communiquer avec le module kernel.
+>
+> - Définir la stack utilisée (Python, C)
+> - Définir le mode de communication (Local via device, Local via socket, Local via syscall, Remote via socket, ...)
+> - Définir les commandes disponibles (shell, keylogger, backdoor, ...)
+>
+
 ## LFS
+
+> *TODO* : Expliquer les tenants et aboutissants du script permettant de créer une image disque LFS.
 
 ### Ressources
 
