@@ -30,7 +30,7 @@ MODULE_VERSION("0.1.0");
  */
 static int __init mod_init(void)
 {
-    DEBUG("LKM rootkit loaded\n");
+    RK_DEBUG("LKM rootkit loaded\n");
 
     core_start();
     return 0;
@@ -46,7 +46,7 @@ static void __exit mod_exit(void)
 {
     core_stop();
 
-    DEBUG("LKM rootkit unloaded\n");
+    RK_DEBUG("LKM rootkit unloaded\n");
 }
 
 // Register the module initialization and exit functions

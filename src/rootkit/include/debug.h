@@ -20,6 +20,7 @@
 #if defined(ROOTKIT_DEBUG) && ROOTKIT_DEBUG == 1
 
 /**
+ * @def RK_DEBUG
  * @brief Print a debug message to the kernel log
  * 
  * This macro prints a debug message to the kernel log if the ROOTKIT_DEBUG
@@ -33,13 +34,11 @@
 #else
 
 /**
+ * @def RK_DEBUG
  * @brief Print a debug message to the kernel log
  * 
  * This macro prints a debug message to the kernel log if the ROOTKIT_DEBUG
  * macro is enabled in the configuration file.
- * 
- * @param fmt The format string
- * @param ... The arguments to format
  * 
  * @note This macro is a no-op if debugging is disabled
  */
