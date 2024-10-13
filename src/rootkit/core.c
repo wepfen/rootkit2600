@@ -2,7 +2,7 @@
 
 
 int core_start(void) {
-  DEBUG("core_start\n");
+  RK_DEBUG("core_start\n");
   return 0;
 }
 

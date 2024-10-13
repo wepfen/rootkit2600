@@ -1,22 +1,22 @@
-ROOTKIT 				:= rootkit
+ROOTKIT := rootkit
 
 # Directories
-MODS_DIR 				:= /lib/modules/$(shell uname -r)
-BUILD_DIR 			:= $(MODS_DIR)/build
-KERN_DIR 				:= $(MODS_DIR)/kernel
+MODS_DIR := /lib/modules/$(shell uname -r)
+BUILD_DIR := $(MODS_DIR)/build
+KERN_DIR := $(MODS_DIR)/kernel
 
 # Module
-obj-m 					:= $(ROOTKIT).o
+obj-m := $(ROOTKIT).o
 
 # Core
-$(ROOTKIT)-y 		+= core.o init.o
+$(ROOTKIT)-y += core.o init.o
 
 # Fonctionnalities
 #$(ROOTKIT)-y 		+= module.o
 
 # Flags
-ccflags-y 			+= -I$(PWD)/include
-ccflags-y 			+= -O0 -Wno-declaration-after-statement -Wno-discarded-qualifiers
+ccflags-y += -I$(PWD)/include
+ccflags-y += -O0 -Wno-declaration-after-statement -Wno-discarded-qualifiers
 
 all:
 	make -C $(BUILD_DIR) M=$(PWD) modules
