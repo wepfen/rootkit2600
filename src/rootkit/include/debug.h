@@ -1,5 +1,5 @@
-#ifndef RK_DEBUG_H
-#define RK_DEBUG_H
+#ifndef _RK_DEBUG_H
+#define _RK_DEBUG_H
 
 /**
  * @file debug.h

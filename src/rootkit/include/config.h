@@ -1,5 +1,5 @@
-#ifndef RK_CONFIG_H
-#define RK_CONFIG_H
+#ifndef _RK_CONFIG_H
+#define _RK_CONFIG_H
 
 /**
  * @file config.h

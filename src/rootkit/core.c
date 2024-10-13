@@ -1,5 +1,7 @@
-#include "core.h"
+#include <linux/kernel.h>
 
+#include "core.h"
+#include "debug.h"
 
 int core_start(void) {
   RK_DEBUG("core_start\n");

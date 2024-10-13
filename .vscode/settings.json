@@ -2,6 +2,13 @@
   "files.associations": {
     "*.pill": "pillar",
     "core.h": "c",
-    "debug.h": "c"
+    "debug.h": "c",
+    "kernel.h": "c",
+    "module.h": "c",
+    "const.h": "c",
+    "sysinfo.h": "c",
+    "types.h": "c",
+    "posix_types.h": "c",
+    "stddef.h": "c"
   }
 }

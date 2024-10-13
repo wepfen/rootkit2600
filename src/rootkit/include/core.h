@@ -1,13 +1,11 @@
-#ifndef RK_CORE_H
-#define RK_CORE_H
+#ifndef _RK_CORE_H
+#define _RK_CORE_H
 
 /**
  * @file core.h
  * 
  * @brief Core functionality of the rootkit
  */
-
-#include "debug.h"
 
 /**
  * @brief Start the core functionality of the rootkit
