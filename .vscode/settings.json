@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.pill": "pillar",
+    "core.h": "c",
+    "debug.h": "c"
+  }
+}

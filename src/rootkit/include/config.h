@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RK_CONFIG_H
+#define RK_CONFIG_H
 
 /**
  * @file config.h
@@ -15,3 +16,5 @@
  * This macro enables or disables debugging messages in the rootkit.
  */
 #define ROOTKIT_DEBUG 1
+
+#endif // RK_CONFIG_H

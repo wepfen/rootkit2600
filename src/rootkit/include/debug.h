@@ -1,5 +1,5 @@
-#ifndef RK_DBG_H
-#define RK_DBG_H
+#ifndef RK_DEBUG_H
+#define RK_DEBUG_H
 
 /**
  * @file debug.h
@@ -15,6 +15,10 @@
 
 #include <linux/kernel.h>
 
+
+// Define the DEBUG macro to print debug messages to the kernel log
+#if defined(ROOTKIT_DEBUG) && ROOTKIT_DEBUG == 1
+
 /**
  * @brief Print a debug message to the kernel log
  * 
@@ -24,10 +28,23 @@
  * @param fmt The format string
  * @param ... The arguments to format
  */
-#if defined(ROOTKIT_DEBUG) && ROOTKIT_DEBUG == 1
 #define RK_DEBUG(fmt, ...) printk(KERN_DEBUG fmt, ##__VA_ARGS__)
+
 #else
+
+/**
+ * @brief Print a debug message to the kernel log
+ * 
+ * This macro prints a debug message to the kernel log if the ROOTKIT_DEBUG
+ * macro is enabled in the configuration file.
+ * 
+ * @param fmt The format string
+ * @param ... The arguments to format
+ * 
+ * @note This macro is a no-op if debugging is disabled
+ */
 #define RK_DEBUG(...)
-#endif
 
 #endif
+
+#endif // RK_DEBUG_H

@@ -27,4 +27,4 @@ int core_start(void);
  */
 void core_stop(void);
 
-#endif
+#endif // RK_CORE_H
