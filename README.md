@@ -97,7 +97,7 @@ Pour spécifier une version du noyau :
 make lfs KERNEL=<version>
 ```
 
-Sinon il est possible de le faire étape par étape :
+Sinon il est possible de le faire étape par étape
 
 Télécharger et compiler les sources : 
 
@@ -203,7 +203,9 @@ Ce rootkit se découpe en deux parties bien distincte un LKM (Linux Kernel Modul
 ## LFS
 
 > *TODO* : Expliquer les tenants et aboutissants du script permettant de créer une image disque LFS.
+>
 > Un utilisateur avec privilèges élevés `root` avec le mot de passe `password`
+>
 > Un utilisateur normal `user` avec le mot de passe `pass`
 
 ### Ressources
