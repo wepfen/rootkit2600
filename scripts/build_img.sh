@@ -94,7 +94,9 @@ if [ ! -d "$ROOTFS_DIR/bin" ]; then
       echo ttyS0 > /etc/securetty;
       rc-update add agetty.ttyS0 default;
       rc-update add root default;
-	  echo "mount -t 9p -o trans=virtio host0 /tmp/share -oversion=9p2000.L" >> /etc/profile;
+	  echo "if ! mount | grep -q "host0"; then" >> /etc/profile
+	  echo "    mount -t 9p -o trans=virtio host0 /tmp/share -oversion=9p2000.L" >> /etc/profile
+	  echo "fi" >> /etc/profile 
       echo "root:password" | chpasswd;
 	  adduser -D -h / -s /bin/sh user
       echo "user:pass" | chpasswd;
