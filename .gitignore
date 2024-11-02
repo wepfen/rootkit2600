@@ -1,2 +1,4 @@
-linux-6.11*
+linux-*
 *wsl.localhost*
+*.img
+*.qcow2
