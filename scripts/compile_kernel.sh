@@ -9,8 +9,26 @@ if [ -z "$KERNEL_VERSION" ]; then
     exit 1
 fi
 
+# Check if the kernel version exists
+if [ ! -d "linux-${KERNEL_VERSION}" ]; then
+	echo "[-] linux-${KERNEL_VERSION} not found"
+	echo "[-] You may download it first : make get_kernel KERNEL=${KERNEL_VERSION}"
+	exit 1
+fi
+
+
 # Compile the kernel
 cd linux-${KERNEL_VERSION}
+
+# Check if the kernel is already compiled
+if [ -f "arch/x86/boot/bzImage" ]; then
+	read -p "[*] Kernel already compiled, compile anyway ? [y/N]" choice
+	case $choice in
+		[Yy]* ) ;;
+		[Nn]* ) exit 0;;
+		* ) echo "Invalid choice"; exit 1;;
+	esac
+fi
 
 # Ask the user if they want to configure the kernel by running make defconfig
 read -p "[*] Do you want to configure the kernel? [y/N]: " choice

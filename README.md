@@ -39,6 +39,14 @@ Ce rootkit n'étant qu'un simple module kernel linux, il suffit de le compiler p
 
 ### Prérequis
 
+```
+docker
+qemu
+build-essential ou base-devel (ou équivalents selon la distribution)
+```
+
+#### Créer un environnement de développement en utilisant les scripts
+
 Avant de tester votre rootkit il vous faudra les sources d'un kernel linux (6.X) pour compiler votre module. Pour se faire vous pouvez utiliser le script `get_kernel.sh` qui vous permettra de télécharger les sources du kernel.
 
 ```bash
@@ -47,7 +55,7 @@ Avant de tester votre rootkit il vous faudra les sources d'un kernel linux (6.X)
 
 > Note : Vous pouvez aussi télécharger les sources du kernel via le site officiel de [kernel.org](https://www.kernel.org/).
 
-Il vous faudra ensuite compiler votre kernel une première fois.
+Il vous faudra ensuite compiler votre kernel une première fois (faire `y` pour la configuration si elle n'a pas déjà été faite). 
 
 ```bash
 ./scripts/compile_kernel.sh <version_kernel> # Exemple : ./scripts/compile_kernel.sh 6.11
@@ -57,12 +65,74 @@ Il vous faudra ensuite compiler votre kernel une première fois.
 
 Maintenant que votre kernel est compilé il faut créer une image disque configurée avec votre kernel et la monter.
 
-> *TODO* : Ajouter le script pour créer une image disque LFS. Voir [LFS](#lfs).
-
-Pour se faire vous devez utiliser le script `to_be_defined.sh` qui vous permettra de créer une image disque et de la monter.
+Pour se faire vous devez utiliser le script `build_img.sh` qui vous permettra de créer une image disque et de la monter.
 
 ```bash
-./scripts/to_be_defined.sh
+./scripts/build_img.sh
+```
+
+Puis de lancer l'image avec :
+
+```bash
+qemu-system-x86_64 -hda disk.img -nographic -virtfs local,path=$shared_folder,mount_tag=host0,security_model=passthrough,id=host0
+```
+
+Un dossier partagé qui servira à transférer les modules kernel sera crée sur la machine hote dans `/tmp/qemu-share` qui sera accessible en lecture sur la VM dans `/tmp/share`
+
+#### Créer un environnement de développement le Makefile
+
+Le Makefile se base sur les scripts et sert à automatiser le process
+
+La version du noyau par défaut est la `6.11`, pour spécifier une autre version il faut rajouter l'argument `KERNEL=<version>` après chaque commande make.
+
+Pour directement créer l'environnement en version 6.11 (compiler les sources et construire la LFS):
+
+```bash
+make lfs
+```
+
+Pour spécifier une version du noyau :
+
+```bash
+make lfs KERNEL=<version>
+```
+
+Sinon il est possible de le faire étape par étape :
+
+Télécharger et compiler les sources : 
+
+```bash
+make kernel
+```
+
+Créer l'image disque et la monter:
+
+```bash
+make deploy
+```
+
+Uniquement créer l'image:
+
+```bash
+make disk
+```
+
+Lancer la VM:
+
+```bash
+make run
+```
+
+Convertir l'image en qcow2:
+
+```bash
+make convert
+```
+
+Supprimer les images disques:
+
+```bash
+make clean
 ```
 
 ### Build
@@ -74,6 +144,8 @@ make
 ```
 
 Normalement cette commande doit se finir en créant plusieurs fichiers dont un `.ko`. Celui que nous allons charger dans notre kernel.
+
+> TODO : ajouter l'user compromis dans la LFS 
 
 ### Load
 
@@ -131,6 +203,8 @@ Ce rootkit se découpe en deux parties bien distincte un LKM (Linux Kernel Modul
 ## LFS
 
 > *TODO* : Expliquer les tenants et aboutissants du script permettant de créer une image disque LFS.
+> Un utilisateur avec privilèges élevés `root` avec le mot de passe `password`
+> Un utilisateur normal `user` avec le mot de passe `pass`
 
 ### Ressources
 

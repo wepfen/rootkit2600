@@ -34,6 +34,7 @@ wget $KERNEL_SOURCE_URL -O linux-${KERNEL_VERSION}.tar.xz
 
 if [ $? -ne 0 ]; then
     echo "[-] Failed to download the kernel source code."
+	rm linux-${KERNEL_VERSION}.tar.xz
     exit 1
 fi
 
