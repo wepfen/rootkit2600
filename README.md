@@ -79,7 +79,7 @@ qemu-system-x86_64 -hda disk.img -nographic -virtfs local,path=$shared_folder,mo
 
 Un dossier partagé qui servira à transférer les modules kernel sera crée sur la machine hote dans `/tmp/qemu-share` qui sera accessible en lecture sur la VM dans `/tmp/share`
 
-#### Créer un environnement de développement le Makefile
+#### Créer un environnement de développement en utilisant le Makefile
 
 Le Makefile se base sur les scripts et sert à automatiser le process
 
