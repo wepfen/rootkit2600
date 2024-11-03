@@ -132,7 +132,7 @@ make convert
 Supprimer les images disques:
 
 ```bash
-make clean
+make clean_disk
 ```
 
 ### Build
@@ -144,13 +144,14 @@ make
 ```
 
 Normalement cette commande doit se finir en créant plusieurs fichiers dont un `.ko`. Celui que nous allons charger dans notre kernel.
+Le fichier sera copié dans la VM si la compilation réussit.
 
 ### Load
 
-Une fois le module compiler et que votre fichier `.ko` est bien visible vous pouvez le charger via la commande suivante
+Une fois le module compilé et que votre fichier `.ko` est bien visible vous pouvez le charger dans la VM via la commande suivante:
 
 ```bash
-make install
+insmod rootkit.ko
 ```
 
 ### Unload
@@ -158,7 +159,7 @@ make install
 Pour décharger votre module de votre kernel actuel.
 
 ```bash
-make remove
+rmmod rootkit.ko
 ```
 
 ### Logs

@@ -1,13 +1,21 @@
+# Kernel & image
 KERNEL ?= 6.11
 DISK ?= disk.img
 DISK_QCOW2 = disk.qcow2
 
+# Building the rootkit
+ROOTKIT := rootkit
+ROOTKIT_DIR := src/rootkit
 MODS_DIR := linux-${KERNEL}
 BUILD_DIR := $(MODS_DIR)
 KERN_DIR := $(MODS_DIR)
+SHARED_FOLDER := /tmp/qemu-share
 
 # Module	
-obj-m += src/rootkit/test.o
+obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
+
+# Core
+$(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o $(ROOTKIT_DIR)/init.o
 
 # Flags
 ccflags-y += -I$(PWD)/include
@@ -17,6 +25,7 @@ PWD := $(CURDIR)
 
 build:
 	make -C ${BUILD_DIR} M=$(PWD) modules
+	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER) 
 
 clean:
 	make -C ${BUILD_DIR} M=$(PWD) clean
