@@ -2,3 +2,12 @@ linux-*
 *wsl.localhost*
 *.img
 *.qcow2
+
+# compiled files
+
+*.symvers
+*.cmd
+*.order
+*.mod
+*.mod.*
+*.o
