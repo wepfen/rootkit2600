@@ -145,8 +145,6 @@ make
 
 Normalement cette commande doit se finir en créant plusieurs fichiers dont un `.ko`. Celui que nous allons charger dans notre kernel.
 
-> TODO : ajouter l'user compromis dans la LFS 
-
 ### Load
 
 Une fois le module compiler et que votre fichier `.ko` est bien visible vous pouvez le charger via la commande suivante
