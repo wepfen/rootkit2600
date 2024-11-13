@@ -1,40 +1,47 @@
 /* myModuleHello */
 #include <linux/init.h>
-#include <linux/module.h>
 #include <linux/printk.h>
+#include<linux/miscdevice.h>
 
-void hello(char *msg);
+// int misc_register(struct miscdevice *misc)
 
-void hello(char *msg){
-	if (!msg){
-		printk(KERN_INFO "Hello World\n");
-    } else {
-		printk(KERN_INFO "%s\n", msg);
-    }
-}
+/*
+struct miscdevice mymisc;
+mymisc->name = "test misc device";
+mymisc->minor = MISC_DYNAMIC_MINOR; // defined in miscdevice.h
+*/
 
+///*
+struct miscdevice mymisc = {
+    .name = "bissap",
+    .minor = MISC_DYNAMIC_MINOR
+};
+//*/
 
-static void goodbye(void){
-	printk(KERN_INFO "Goodbye, cruel world\n");
-}
-
-static __init int hello_init(void)
+static int __init mymisc_init(void)
 {
-	hello(NULL);
+
+	int r;
+	r = misc_register(&mymisc);
+	if (r < 0) {
+		pr_warn("misc_register() failed: %d\n", r);
+		return r;
+	}
+	pr_info("device register succeeded\n");
 	return 0;
 }
 
-static __exit void hello_exit(void)
+
+static void __exit mymisc_exit(void)
 {
-	goodbye();
+    misc_deregister(&mymisc);
+    pr_info("misc_register exit done !!!\n");
 }
 
+module_init(mymisc_init)
+module_exit(mymisc_exit)
 
-module_init(hello_init);
-module_exit(hello_exit);
-
-MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("myModulehello 1, print hello at insertion and goodby at removal");
-MODULE_AUTHOR("developpeur noyau");
-EXPORT_SYMBOL(hello);
-
+MODULE_LICENSE("MIT");
+MODULE_AUTHOR("jsp frr j'essaye de rootkiter");
+MODULE_DESCRIPTION("simple misc device");
+MODULE_VERSION("");
