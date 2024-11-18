@@ -25,6 +25,7 @@ PWD := $(CURDIR)
 
 build:
 	make -C ${BUILD_DIR} M=$(PWD) modules
+	@mkdir -p /tmp/qemu-share
 	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER) 
 
 clean:
