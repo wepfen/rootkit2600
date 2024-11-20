@@ -30,6 +30,7 @@ build:
 
 clean:
 	make -C ${BUILD_DIR} M=$(PWD) clean
+	@rm ${ROOTKIT_DIR}/client
 
 help:
 	@echo "Usage: make <target>"
