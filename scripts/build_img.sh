@@ -80,6 +80,7 @@ docker run -it --rm -v $ROOTFS_DIR:/custom-rootfs alpine sh -c '
 '
 
 echo "[+] Copying Kernel source to rootfs..."
+sudo mkdir $ROOTFS_DIR/boot
 sudo cp $KERNEL_PATH/arch/x86/boot/bzImage $ROOTFS_DIR/boot/vmlinuz
 
 echo "[+] Configuring GRUB..."
