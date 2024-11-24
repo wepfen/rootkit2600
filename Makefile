@@ -11,6 +11,7 @@ BUILD_DIR := $(MODS_DIR)
 KERN_DIR := $(MODS_DIR)
 SHARED_FOLDER := /tmp/qemu-share
 CLIENT := ientcli
+RELEASE_DIR := dist  
 
 # Module	
 obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
@@ -28,12 +29,14 @@ build:
 	make -C ${BUILD_DIR} M=$(PWD) modules
 	@mkdir -p /tmp/qemu-share
 	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER)
-	gcc -Wall -Werror -static -o ${CLIENT} ${ROOTKIT_DIR}/client.c 
+	@mv ${ROOTKIT_DIR}/rootkit.ko $(RELEASE_DIR)
+	gcc -Wall -Werror -static -o $(CLIENT) ${ROOTKIT_DIR}/client.c
 	@cp ${CLIENT} /tmp/qemu-share
+	@mv $(CLIENT) $(RELEASE_DIR)
 
 clean:
 	make -C ${BUILD_DIR} M=$(PWD) clean
-	@rm ${ROOTKIT_DIR}/client
+	@rm -rf dist/*
 
 help:
 	@echo "Usage: make <target>"
