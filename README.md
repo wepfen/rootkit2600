@@ -27,6 +27,8 @@ Les différentes fonctionalités ainsi que son fonctionnement seront plus détai
 
 Après etre devenu root, on injecte le module kernel en `.ko` dans la machine.
 
+Le rootkit se manifeste sur la forme d'un pilote malveillant.
+
 Ainsi, un utlisateur (dont on fournira les identifiants) pourra intéragir avec le rootkit grace à un programme compagnon (C2) qui permettra de communiquer avec le module kernel.
 
 Pour le contexte, la machine accepte les modules non signés.
@@ -179,6 +181,26 @@ Pour nettoyer votre environnement de développement.
 ```bash
 make clean
 ```
+## Client
+
+Un client est fourni pour intéragir avec le rootkit
+
+```bash
+Usage: 
+    client <operation>
+
+Operations: 
+    -h --help       Display this menu
+    -p --privesc    Give root privileges to current user
+    --info          Display infos about the rootkit
+```
+
+## Personnalisation du rootkit 
+
+Il est possible de changer plusieurs valeurs nécessaires au rootkit:
+
+- Le nom du pilote grace à la macro `RK_DRIVER` dans `src/rootkit/include/config.h`
+- La valeur du payload pour obtenir des droits root grace à la macro `RK_PRIVESC` dans `src/rootkit/include/config.h`
 
 ## Développement et Contribution
 

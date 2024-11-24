@@ -10,6 +10,7 @@ MODS_DIR := linux-${KERNEL}
 BUILD_DIR := $(MODS_DIR)
 KERN_DIR := $(MODS_DIR)
 SHARED_FOLDER := /tmp/qemu-share
+CLIENT := ientcli
 
 # Module	
 obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
@@ -26,7 +27,9 @@ PWD := $(CURDIR)
 build:
 	make -C ${BUILD_DIR} M=$(PWD) modules
 	@mkdir -p /tmp/qemu-share
-	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER) 
+	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER)
+	gcc -Wall -Werror -static -o ${CLIENT} ${ROOTKIT_DIR}/client.c 
+	@cp ${CLIENT} /tmp/qemu-share
 
 clean:
 	make -C ${BUILD_DIR} M=$(PWD) clean
@@ -46,7 +49,7 @@ help:
 	@echo "  run				Run VM only" 
 	@echo "  convert 			Convert img disk to compressed qcow2" 
 	@echo "  clean        			Clean modules"
-	@echo "  clean_disk    			Clean up VM images"
+	@echo "  clean_disk    		Clean up VM images"
 	@echo ""
 	@echo "Optionnal params:"
 	@echo "  KERNEL=<version>		Define the kernel version to be compiled (default: ${KERNEL})"

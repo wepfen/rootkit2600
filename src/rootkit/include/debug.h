@@ -30,6 +30,8 @@
  * @param ... The arguments to format
  */
 #define RK_DEBUG(fmt, ...) printk(KERN_DEBUG fmt, ##__VA_ARGS__)
+#define CLIENT_DEBUG(fmt, ...) printf(fmt, ##__VA_ARGS__)
+ 
 
 #else
 
@@ -43,6 +45,7 @@
  * @note This macro is a no-op if debugging is disabled
  */
 #define RK_DEBUG(...)
+#define CLIENT_DEBUG(...)
 
 #endif
 
