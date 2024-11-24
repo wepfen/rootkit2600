@@ -24,21 +24,17 @@ cd linux-${KERNEL_VERSION}
 if [ -f "arch/x86/boot/bzImage" ]; then
 	read -p "[*] Kernel already compiled, compile anyway ? [y/N]" choice
 	case $choice in
-		[Yy]* ) ;;
+		[Yy]* ) echo "[+] Compiling the kernel...";;
 		[Nn]* ) exit 0;;
 		* ) echo "Invalid choice"; exit 1;;
 	esac
 fi
 
-# Ask the user if they want to configure the kernel by running make defconfig
-read -p "[*] Do you want to configure the kernel? [y/N]: " choice
-case $choice in
-    [Yy]* ) make defconfig;;
-    [Nn]* ) echo "[*] Skipping kernel configuration.";;
-    * ) echo "Invalid choice"; exit 1;;
-esac
-
-echo "[+] Compiling the kernel..."
+# Configure the kernel .config is not found (default config is used)
+if [ -f ".config" ]; then
+    echo "[+] Configuring the kernel";
+    make defconfig;
+fi
 
 # Compile the kernel
 make -j$(nproc)
