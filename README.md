@@ -49,11 +49,15 @@ and other build utils see below
 
 **For debian based distros :**
 
-`sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils`
+```bash
+sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils qemu-system docker
+```
 
 **For arch based distros :**
 
-`sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full`
+```bash
+sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full docker
+```
 
 ### Envrionnement de développement
 
