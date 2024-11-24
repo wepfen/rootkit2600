@@ -31,7 +31,7 @@ if [ -f "arch/x86/boot/bzImage" ]; then
 fi
 
 # Configure the kernel .config is not found (default config is used)
-if [ -f ".config" ]; then
+if [ ! -f ".config" ]; then
     echo "[+] Configuring the kernel";
     make defconfig;
 fi
