@@ -15,8 +15,8 @@
 
 set -e
 
-if [ -z "$1" ]; then
-    echo "Usage: $0 <kernel_version>"
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <kernel_version> <output image disk>"
     exit 1
 fi
 
@@ -34,7 +34,7 @@ if [ ! -f $KERNEL_PATH/arch/x86/boot/bzImage ]; then
     exit 1
 fi
 
-DISK_IMG="disk.img"
+DISK_IMG="$2"
 DISK_SIZE="450M"
 ROOTFS_DIR="/tmp/custom-rootfs"
 LOOP_DEVICE=""

