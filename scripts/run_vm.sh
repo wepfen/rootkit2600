@@ -2,8 +2,8 @@
 
 DISK_IMG=$1
 
-if [ ! -f "disk.img" ]; then
-	echo "[-] disk.img not found"
+if [ ! -f "$DISK_IMG" ]; then
+	echo "[-] $DISK_IMG not found"
 	exit 1
 fi
 

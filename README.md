@@ -49,11 +49,15 @@ and other build utils see below
 
 **For debian based distros :**
 
-`sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils`
+```bash
+sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils qemu-system docker.io docker-cli
+```
 
 **For arch based distros :**
 
-`sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full`
+```bash
+sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full docker
+```
 
 ### Envrionnement de développement
 
@@ -102,24 +106,34 @@ Le Makefile se base sur les scripts et sert à automatiser (ou presque) le proce
 
 La version du noyau par défaut est la `6.11`, pour spécifier une autre version il faut rajouter l'argument `KERNEL=<version>` après chaque commande make.
 
-Pour directement créer l'environnement en version 6.11 (compiler les sources et construire la LFS):
+
+Pour afficher l'aide :
+
+```bash
+make help
+```
+
+Pour directement créer l'environnement en version 6.11 (compiler les sources et construire la LFS) :
 
 ```bash
 make lfs
+# example with args : make lfs KERNEL=6.11.2 DISK=anotherdisk.img
 ```
 
-Pour spécifier une version du noyau :
+Pour nettoyer votre environnement de développement (les fichiers générés par la compilation du rootkit) :
 
 ```bash
-make lfs KERNEL=<version>
+make clean
 ```
+
 Puis lancer la VM:
 
 ```bash
 make run
+# example with args : make run DISK=anotherdisk.img
 ```
 
-Et enfin compiler le module et le clienlogiciel compagnon (client pour intéragir avec le rootkit).
+Et enfin compiler le module et le clienlogiciel compagnon (client pour intéragir avec le rootkit) : 
 
 ```bash
 make
@@ -129,7 +143,7 @@ Cette commande doit se finir en créant plusieurs fichiers dont un `.ko` et un l
 Le fichier sera copié dans la VM si la compilation réussit.
 
 
-D'autres commandes makes utiles :
+D'autres commandes make utiles :
 
 > Note :  Il est possible de choisir la version de kernel voulue pour chaque commande make en rajoutant l'argument KERNEL=<version> ex: make kernel KERNEL=6.11.3
 
@@ -137,38 +151,45 @@ Télécharger et compiler les sources :
 
 ```bash
 make kernel
+# example with args : make kernel KERNEL=6.11.2
 ```
 
 Télécharger les sources : 
 
 ```bash
 make get_kernel
+# example with args : make get_kernel KERNEL=6.11.2
 ```
 
 Compiler les sources : 
 
 ```bash
-make get_kernel
+make compile_kernel
+# example with args : make compile_kernel KERNEL=6.11.2
 ```
 
 Créer l'image disque et la monter:
 
 ```bash
 make deploy
+# example with args : make deploy KERNEL=6.11.2 DISK=anotherdisk.img
 ```
 
-> Note :  Il est possible de choisir un nom de fichier personnalisé pour chaque commande make concernant l'image disque en rajoutant l'argument DISK=<nom de fichier> ex: make deploy DISK=nvo_disk.img
+> Note :  Il est possible de choisir un nom de fichier personnalisé pour chaque commande make concernant l'image disque en rajoutant l'argument DISK=<nom de l'image disque> ex: make deploy DISK=nvo_disk.img
 
 Uniquement créer l'image:
 
 ```bash
 make disk
+# example with args : make disk KERNEL=6.11.2 DISK=anotherdisk.img
 ```
+
 
 Convertir l'image en qcow2:
 
 ```bash
 make convert
+# example with args : make convert DISK=anotherdisk.img DISK_QCOW2=anotherdisk.qcow2
 ```
 
 Supprimer les images disques:
@@ -181,7 +202,10 @@ make clean_disk
 
 Compiler le rootkit et son logiciel compagnon
 
-`make`
+```bash
+make
+# example with args : make KERNEL=6.11.2
+```
 
 ### Load
 
@@ -225,12 +249,14 @@ Un logiciel compagnon ou client est fourni pour intéragir avec le rootkit
 
 ```bash
 Usage: 
-    client <operation>
+    ientcli <operation>
 
 Operations: 
     -h --help       Display this menu
     -p --privesc    Give root privileges to the current user
     --info          Display infos about the rootkit
+    --hide          Hide the rootkit from modules list
+    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)
 ```
 
 ## Personnalisation du rootkit 
