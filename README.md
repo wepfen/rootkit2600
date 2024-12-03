@@ -50,13 +50,13 @@ and other build utils see below
 **For debian based distros :**
 
 ```bash
-sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils qemu-system docker.io docker-cli
+sudo apt install bc binutils bison dwarves flex gcc git gnupg2 gzip libelf-dev libncurses5-dev libssl-dev make openssl pahole perl-base rsync tar xz-utils qemu-system docker.io docker-cli clang
 ```
 
 **For arch based distros :**
 
 ```bash
-sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full docker
+sudo pacman -S base-devel bc coreutils cpio gettext initramfs kmod libelf ncurses pahole perl python rsync tar xz qemu-full docker clang
 ```
 
 ### Envrionnement de développement
