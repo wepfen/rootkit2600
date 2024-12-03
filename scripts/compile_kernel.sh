@@ -3,9 +3,10 @@
 # This script  compiles the kernel source code
 
 KERNEL_VERSION=$1
+CC=$2
 
-if [ -z "$KERNEL_VERSION" ]; then
-    echo "Usage: $0 <kernel_version>"
+if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <kernel_version> <compiler>"  
     exit 1
 fi
 
@@ -24,7 +25,7 @@ cd linux-${KERNEL_VERSION}
 if [ -f "arch/x86/boot/bzImage" ]; then
 	read -p "[*] Kernel already compiled, compile anyway ? [y/N]" choice
 	case $choice in
-		[Yy]* ) echo "[+] Compiling the kernel...";;
+		[Yy]* ) echo "[+] Compiling the kernel ...";;
 		[Nn]* ) exit 0;;
 		* ) echo "Invalid choice"; exit 1;;
 	esac
@@ -34,10 +35,21 @@ fi
 if [ ! -f ".config" ]; then
     echo "[+] Configuring the kernel";
     make defconfig;
+else
+	read -p "[*] .config already exists, reconfigure the Kernel ? [y/N]" choice
+	case $choice in
+		[Yy]* ) 
+			echo "[+] Deleting .config ..."
+			rm .config
+			echo "[+] Reconfiguring the kernel"
+			make defconfig;;
+		[Nn]* );;
+		* ) echo "Invalid choice"; exit 1;;
+	esac
 fi
 
 # Compile the kernel
-make -j$(nproc)
+make -j$(nproc) CC=${CC}
 
 if [ $? -ne 0 ]; then
     echo "[-] Failed to compile the kernel."

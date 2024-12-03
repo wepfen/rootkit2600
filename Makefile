@@ -11,25 +11,27 @@ BUILD_DIR := $(MODS_DIR)
 KERN_DIR := $(MODS_DIR)
 SHARED_FOLDER := /tmp/qemu-share
 CLIENT := ientcli
-RELEASE_DIR := dist  
+RELEASE_DIR := dist 
+CC := clang
 
 # Module	
 obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
+obj-m += $(ROOTKIT_DIR)/kprobe_hook.o
 
 # Core
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o $(ROOTKIT_DIR)/init.o $(ROOTKIT_DIR)/hide.o
 
 # Flags
 ccflags-y += -I$(PWD)/include
-ccflags-y += -O0 -Wno-declaration-after-statement -Wno-discarded-qualifiers
+ccflags-y += -O0 -Wno-declaration-after-statement -Wno-ignored-qualifiers 
 
 PWD := $(CURDIR)
 
 build:
-	make -C ${BUILD_DIR} M=$(PWD) modules
+	make -C ${BUILD_DIR} M=$(PWD) modules CC=$(CC) 
 	@mkdir -p /tmp/qemu-share
-	@cp ${ROOTKIT_DIR}/rootkit.ko $(SHARED_FOLDER)
-	@mv ${ROOTKIT_DIR}/rootkit.ko $(RELEASE_DIR)
+	@cp ${ROOTKIT_DIR}/*.ko $(SHARED_FOLDER)
+	@mv ${ROOTKIT_DIR}/*.ko $(RELEASE_DIR)
 	gcc -Wall -Werror -static -o $(CLIENT) ${ROOTKIT_DIR}/client.c
 	@cp ${CLIENT} /tmp/qemu-share
 	@mv $(CLIENT) $(RELEASE_DIR)
@@ -60,10 +62,10 @@ help:
 	
 kernel:
 	./scripts/get_kernel.sh $(KERNEL) 
-	./scripts/compile_kernel.sh $(KERNEL)
+	./scripts/compile_kernel.sh $(KERNEL) $(CC)
 
 compile_kernel:
-	./scripts/compile_kernel.sh $(KERNEL)
+	./scripts/compile_kernel.sh $(KERNEL) $(CC)
 
 get_kernel:
 	./scripts/get_kernel.sh $(KERNEL) 
