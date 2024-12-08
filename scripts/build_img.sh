@@ -85,10 +85,9 @@ if ! systemctl is-active --quiet docker; then
 	sudo systemctl start docker
 fi
 
-<<<<<<< HEAD
 echo "[+] Copying Kernel source to rootfs..."
 sudo mkdir $ROOTFS_DIR/boot
-=======
+
 # Check if root filesystem is populated
 if [ ! -d "$ROOTFS_DIR/bin" ]; then
     echo "[*] Installing minimal Alpine Linux..."
@@ -118,7 +117,6 @@ fi
 
 echo "[*] Copying Kernel source to rootfs..."
 sudo mkdir -p $ROOTFS_DIR/boot/grub
->>>>>>> 6abde945cf01650d2804f143626efad36ad10ec1
 sudo cp $KERNEL_PATH/arch/x86/boot/bzImage $ROOTFS_DIR/boot/vmlinuz
 
 echo "[*] Configuring GRUB..."
