@@ -92,11 +92,11 @@ Pour se faire vous devez utiliser le script `build_img.sh` qui vous permettra de
 ./scripts/build_img.sh
 ```
 
-Puis de lancer l'image avec :
+Puis de lancer l'image soit via le script `./scripts/run_vm.sh` soit via la commande suivante:
 
 ```bash
-qemu-system-x86_64 -hda disk.img -nographic -virtfs local,path=$shared_folder,mount_tag=host0,security_model=passthrough,id=host0
-```
+qemu-system-x86_64 -hda ./disk.img -nographic -virtfs local,path=/tmp/qemu-share,mount_tag=host0,security_model=passthrough,id=host0
+``
 
 Un dossier partagé qui servira à transférer les modules noyau sera crée sur la machine hote dans `/tmp/qemu-share` qui sera accessible en lecture sur la VM dans `/tmp/share`
 
