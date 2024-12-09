@@ -89,10 +89,10 @@ Maintenant que votre noyau est compilé il faut créer une image disque configur
 Pour se faire vous devez utiliser le script `build_img.sh` qui vous permettra de créer une image disque et de la monter.
 
 ```bash
-./scripts/build_img.sh
+./scripts/build_img.sh <kernel_version> <output_disk.img>
 ```
 
-Puis de lancer l'image soit via le script `./scripts/run_vm.sh` soit via la commande suivante:
+Puis de lancer l'image soit via le script `./scripts/run_vm.sh ./disk.img` soit via la commande suivante:
 
 ```bash
 qemu-system-x86_64 -hda ./disk.img -nographic -virtfs local,path=/tmp/qemu-share,mount_tag=host0,security_model=passthrough,id=host0
