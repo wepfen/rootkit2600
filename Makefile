@@ -16,10 +16,8 @@ CC := clang
 
 # Module	
 obj-m += $(ROOTKIT_DIR)/$(ROOTKIT).o
-obj-m += $(ROOTKIT_DIR)/kprobe_hook.o
-
 # Core
-$(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o $(ROOTKIT_DIR)/init.o $(ROOTKIT_DIR)/hide.o
+$(ROOTKIT)-y += $(ROOTKIT_DIR)/core.o  $(ROOTKIT_DIR)/utils.o 
 
 # Flags
 ccflags-y += -I$(PWD)/include
@@ -32,13 +30,18 @@ build:
 	@mkdir -p /tmp/qemu-share
 	@cp ${ROOTKIT_DIR}/*.ko $(SHARED_FOLDER)
 	@mv ${ROOTKIT_DIR}/*.ko $(RELEASE_DIR)
-	gcc -Wall -Werror -static -o $(CLIENT) ${ROOTKIT_DIR}/client.c
+	make client
 	@cp ${CLIENT} /tmp/qemu-share
 	@mv $(CLIENT) $(RELEASE_DIR)
 
+
+client:
+	gcc -Wall -Werror -static -o $(CLIENT) ${ROOTKIT_DIR}/client.c
+
+
 clean:
 	make -C ${BUILD_DIR} M=$(PWD) clean
-	@rm -rf dist/*
+	@rm -f dist/*
 
 help:
 	@echo "Usage: make <target>"
@@ -84,8 +87,10 @@ deploy : disk run
 
 lfs: kernel deploy
 
+
+
 clean_disk:
-	rm -rf *.img *.qcow2
+	rm -f *.img *.qcow2
 
 
 .PHONY: help kernel compile_kernel clean get_kernel disk run deploy all clean_disk

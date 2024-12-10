@@ -61,7 +61,8 @@ static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
     */
     //mettre un offset de 512 à la struct précédente ?
     if ((ret = strcmp(filename, "test")) == 0){
-        regs->dx = 0;
+        //regs->dx = 0;
+		strcpy((char *)regs->si, "\x00");
     }
 	return 0;
 
