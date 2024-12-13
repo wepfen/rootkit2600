@@ -11,3 +11,10 @@ linux-*
 *.mod
 *.mod.*
 *.o
+
+# unused files
+*.nu
+
+dist/
+
+.vscode/
