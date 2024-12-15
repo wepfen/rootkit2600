@@ -28,8 +28,7 @@ int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs);
 /**
  * @brief The kprobe structure
  * 
- * This structure defines the kprobe that will be used to intercept the kernel
- * function.
+ * This structure defines the kprobe that will be used to intercept the kernel function.
  * 
  * @note Here we are using the filldir64 function as the target for the kprobe.
  */

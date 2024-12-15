@@ -17,7 +17,12 @@
  */
 #define RK_DEBUG 1
 
-#define RK_NAME "maxiproutkit"
+/**
+ * @brief The name of the rootkit
+ * 
+ * This macro defines the name of the rootkit.
+ */
+#define RK_NAME "rootkit.ko"
 
 /**
  * @brief The name of the rootkit device driver
@@ -54,5 +59,25 @@
  * rootkit in the kernel module list
  */
 #define RK_REVEAL "omg face reveal irl live en stream ce soir 21h"
+
+/**
+ * @brief The command to hide a file
+ * 
+ * This macro defines the command that will be used to hide a file in the file
+ * 
+ * @note This command needs to be sent to the rootkit device driver to hide a
+ * file in the file system
+ */
+#define RK_FHIDE "file_hide"
+
+/**
+ * @brief The command to reveal a file
+ * 
+ * This macro defines the command that will be used to reveal a file in the file
+ * 
+ * @note This command needs to be sent to the rootkit device driver to reveal a
+ * file in the file system
+ */
+#define RK_FUNHIDE "file_unhide"
 
 #endif // RK_CONFIG_H

