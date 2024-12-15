@@ -5,6 +5,8 @@
 #define RK_PRIVESC "skibidi root"
 #define RK_HIDE "disparition no jutsu"
 #define RK_REVEAL "omg face reveal irl live en stream ce soir 21h"
+#define RK_NAME "rootkit.ko"
+
 /**
  * @file config.h
  * 
