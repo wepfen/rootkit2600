@@ -24,8 +24,8 @@ int display_help(char * filename)
     printf("    info            Display infos about the rootkit\n");
     printf("    hide            Hide the rootkit from modules list\n");
     printf("    unhide          Unhide the rootkit from module list (then allow us to remove the rootkit)\n");
-    printf("    fhide <name>    Hide a file from the file system\n");
-    printf("    funhide <name>  Unhide a file from the file system\n");
+    // printf("    fhide <name>    Hide a file from the file system\n");
+    // printf("    funhide <name>  Unhide a file from the file system\n");
 
     return 0;
 }

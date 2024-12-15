@@ -252,11 +252,11 @@ Usage:
     ientcli <operation>
 
 Operations: 
-    -h --help       Display this menu
-    -p --privesc    Give root privileges to the current user
-    --info          Display infos about the rootkit
-    --hide          Hide the rootkit from modules list
-    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)
+    -h, help        Display this menu
+    privesc         Give root privileges to the current user
+    info            Display infos about the rootkit
+    hide            Hide the rootkit from modules list
+    unhide          Unhide the rootkit from module list (then allow us to remove the rootkit)
 ```
 
 ## Personnalisation du rootkit 
