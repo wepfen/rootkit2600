@@ -10,7 +10,7 @@ Rootkit linux pour les version de noyau __6.X__
 
 ## Introduction
 
-Le but de ce projet est de réaliser un rootkit linux ainsi qu'un C2 (Command Controller) permettant de communiquer avec le module noyau.
+Le but de ce projet est de réaliser un rootkit linux ainsi qu'un logiciel compagnon permettant de communiquer avec le module noyau.
 
 ## Objectifs
 
@@ -19,7 +19,6 @@ Les objectifs de ce rootkit sont les suivants :
 - La discrétion (module noyau caché, pas de logs, fichiers cachés, processus cachés, ...)
 - La persistence (module noyau persistant après un reboot)
 - Fonctionalités malveillante (shell root, keylogger, backdoor, ...)
-- Un C2 pour communiquer avec le module noyau (commandes, logs, ...)
 
 Les différentes fonctionalités ainsi que son fonctionnement seront plus détaillées dans la partie [Architecture](#architecture).
 
@@ -29,7 +28,7 @@ Après etre devenu root, on injecte le module noyau en `.ko` dans la machine.
 
 Le rootkit se manifeste sur la forme d'un pilote malveillant.
 
-Ainsi, un utlisateur (dont on fournira les identifiants) pourra intéragir avec le rootkit grace à un programme compagnon (C2) qui permettra de communiquer avec le module noyau.
+Ainsi, un utlisateur (dont on fournira les identifiants) pourra intéragir avec le rootkit grace à un programme compagnon qui permettra de communiquer avec le module noyau.
 
 Pour le contexte, la machine accepte les modules non signés.
 
@@ -272,27 +271,19 @@ Pour le développement du projet merci de vous référer à la page [Comment con
 
 ## Architecture
 
-Ce rootkit se découpe en deux parties bien distincte un LKM (Linux Kernel Module) et un C2 (Command Controller) permettant de s'interfacer avec votre module noyau.
+Ce rootkit se découpe en deux parties bien distincte un misc device ou périphérique et une sonde kernel (kprobe).
 
 ### LKM
 
-### C2
-
-> *TODO* : Expliquer les tenants et aboutissants du C2 permettant de communiquer avec le module noyau.
->
-> - Définir la stack utilisée (Python, C)
-> - Définir le mode de communication (Local via device, Local via socket, Local via syscall, Remote via socket, ...)
-> - Définir les commandes disponibles (shell, keylogger, backdoor, ...)
->
-
 ## LFS
 
-> *TODO* : Expliquer les tenants et aboutissants du script permettant de créer une image disque LFS.
->
-> Un utilisateur avec privilèges élevés `root` avec le mot de passe `password`
->
-> Un utilisateur normal `user` avec le mot de passe `pass`
+Grace à des scripts une machine basé sur alpine linux est construite.
 
+Elle contient : 
+    - Un utilisateur avec privilèges élevés `root` avec le mot de passe `password`
+    - Un utilisateur normal `user` avec le mot de passe `pass`
+    - Un dossier partagé monté dans `/tmp/share` sur la VM et `/tmp/qemu-share` sur l'host
+    
 ### Ressources
 
 - [Rootkit Tutorial using Vagrant](https://xcellerator.github.io/posts/linux_rootkits_01/)
