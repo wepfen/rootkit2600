@@ -228,7 +228,7 @@ rmmod rootkit.ko
 
 Si vous souhaitez voir les logs générés par votre module en mode debug.
 
-> Pour compiler en mode debug, passer la macro `ROOTKIT_DEBUG` de 0 à 1 dans le fichier `src/rootkit/include/config.h` puis recompilez
+> Pour compiler en mode debug, passer la macro `RK_DEBUG` de 0 à 1 dans le fichier `src/rootkit/include/config.h` puis recompilez
 
 ```bash
 dmesg
@@ -252,11 +252,11 @@ Usage:
     ientcli <operation>
 
 Operations: 
-    -h --help       Display this menu
-    -p --privesc    Give root privileges to the current user
-    --info          Display infos about the rootkit
-    --hide          Hide the rootkit from modules list
-    --unhide        Unhide the rootkit from module list (then allow us to remove the rootkit)
+    -h, help        Display this menu
+    privesc         Give root privileges to the current user
+    info            Display infos about the rootkit
+    hide            Hide the rootkit from modules list
+    unhide          Unhide the rootkit from module list (then allow us to remove the rootkit)
 ```
 
 ## Personnalisation du rootkit 

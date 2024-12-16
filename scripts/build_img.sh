@@ -86,7 +86,7 @@ if ! systemctl is-active --quiet docker; then
 fi
 
 echo "[+] Copying Kernel source to rootfs..."
-sudo mkdir $ROOTFS_DIR/boot
+sudo mkdir -p $ROOTFS_DIR/boot
 
 # Check if root filesystem is populated
 if [ ! -d "$ROOTFS_DIR/bin" ]; then

@@ -2,29 +2,27 @@
 
 ## LFS
 
-- [ ] LFS script
+- [x] LFS script
 
 ## Discrétion
 
-- [ ] Cacher un module
-- [ ] Cacher système de fichier
-- [ ] Cacher processus
-- [ ] Filtrer ports
-- [ ] Cacher historique de commandes
+- [x] Cacher un module
+- [x] Cacher système de fichier
 
 ## Persistance
 
-- [ ] Définir comment ? (grub, init, systemd, etc.)
+- [x] Définir comment ? (grub, init, systemd, etc.)
 - [ ] Implémenter
 
 ## Fonctionnalités malveillantes
 
-- [ ] Implémenter un keylogger (définir comment et l'envoie)
-- [ ] Shell root
+- [x] Shell root
 
 ## C2
 
-*TBD*
+- [x] Définir comment ? (socket, fichier, etc.)
+- [x] Implémenter
+- [x] Définir les commandes disponibles
 
 ## Rapport / Documentation
 
