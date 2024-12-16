@@ -84,9 +84,7 @@ int add_hidden_entry(void *entry)
 
     RTK_DEBUG("new_hidden_entry: %p\n", new_hidden_entry);
 
-    char *entry_str = (char *)entry;
-
-    RTK_DEBUG("Hiding %s\n", entry_str);
+    RTK_DEBUG("Hiding %s\n", (char *)entry);
 
     new_hidden_entry->entry = entry;
     new_hidden_entry->next = hidden_list_head;

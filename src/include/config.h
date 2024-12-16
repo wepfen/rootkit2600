@@ -15,7 +15,7 @@
  * 
  * This macro enables or disables debugging messages in the rootkit.
  */
-#define RK_DEBUG 1
+#define RK_DEBUG 0
 
 /**
  * @brief The name of the rootkit

